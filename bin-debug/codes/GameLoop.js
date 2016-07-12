@@ -3,14 +3,19 @@ var GameLoop = (function () {
         this.isPlaying = false;
         this.maingame = maingame;
         this.gameLayer = new egret.DisplayObjectContainer();
+        // this.gameLayer.cacheAsBitmap = true;
         this.myLayer = new egret.DisplayObjectContainer();
         this.enemyLayer = new egret.DisplayObjectContainer();
+        // this.enemyLayer.cacheAsBitmap = true;
         this.gameLayer.addChild(this.enemyLayer);
         this.gameLayer.addChild(this.myLayer);
         this.stageHeight = this.maingame.stage.stageHeight;
     }
     var d = __define,c=GameLoop,p=c.prototype;
     p.start = function () {
+        this.factory = SimpleFactory.getInstance();
+        this.factory.bindClass(MyBullet);
+        this.factory.bindClass(EnemyPlane);
         this.maingame.addChild(this.gameLayer);
         this.initMyPlane();
         this.initEnemy();
@@ -41,7 +46,8 @@ var GameLoop = (function () {
         this.myPlane.removeEventListener(MyPlane.MY_PLANE_DEAD, this.myPlaneDead, this);
     };
     p.onTimer = function (e) {
-        var enemy = new EnemyPlane();
+        // var enemy = new EnemyPlane();
+        var enemy = this.factory.getClassInstance(EnemyPlane);
         this.enemyLayer.addChild(enemy);
         enemy.x = Math.random() * (this.maingame.stage.stageWidth - enemy.width);
         enemy.y = -enemy.height;
@@ -52,13 +58,20 @@ var GameLoop = (function () {
     //我的子弹跟敌人碰撞
     //我的飞机跟敌人碰撞
     p.onFrame = function (e) {
+        //test
+        // var dict:Object = this.factory.clsDict;
+        // var arr = dict[<any>MyBullet];
+        // console.log(`MyBullet:${arr.length}`);
+        // arr = dict[<any>(EnemyPlane)];
+        // console.log(`EnemyPlane:${arr.length}`);
         var bullets = this.myPlane.bullets;
         for (var i = 0; i < bullets.length; i++) {
-            var bullet = bullets[i];
-            bullet.updatePosition();
-            if (bullet.y + bullet.height < 0) {
-                Utils.removeFromParent(bullet);
+            var _bullet = bullets[i];
+            _bullet.updatePosition();
+            if (_bullet.y + _bullet.height < 0) {
+                Utils.removeFromParent(_bullet);
                 bullets.splice(i, 1);
+                this.factory.saveClassInstance(MyBullet, _bullet);
                 i--;
             }
         }
@@ -68,11 +81,13 @@ var GameLoop = (function () {
             if (_enemy.y + _enemy.height >= this.stageHeight) {
                 Utils.removeFromParent(_enemy);
                 this.enemys.splice(j, 1);
+                this.factory.saveClassInstance(EnemyPlane, _enemy);
                 j--;
             }
         }
         var myPlaneRetangle = new egret.Rectangle(this.myPlane.x, this.myPlane.y, this.myPlane.width, this.myPlane.height);
         var enemyRectangle = new egret.Rectangle();
+        var bulletRectangle = new egret.Rectangle();
         for (var k = 0; k < this.enemys.length; k++) {
             var enemy = this.enemys[k];
             enemyRectangle.x = enemy.x;
@@ -83,21 +98,35 @@ var GameLoop = (function () {
                 this.myPlane.underAttack();
                 this.enemys.splice(k, 1);
                 Utils.removeFromParent(enemy);
+                this.factory.saveClassInstance(EnemyPlane, enemy);
                 var sound = RES.getRes("explosion_wav");
                 sound.play(0, 1);
                 k--;
                 continue;
             }
+            var count1 = this.myPlane.bullets.length;
+            var count2 = this.enemys.length;
+            var count3 = count1 * count2;
+            console.log("hittest bullets:" + count1);
+            console.log("hittest enemys:" + count2);
+            console.log("at most:" + count3);
             for (var m = 0; m < this.myPlane.bullets.length; m++) {
                 var bullet = this.myPlane.bullets[m];
                 var bulletx = bullet.x + (bullet.width >> 1);
                 var bullety = bullet.y + 1;
                 if (enemy.hitTestPoint(bulletx, bullety, true)) {
+                    // bulletRectangle.x = bullet.x;
+                    // bulletRectangle.y = bullet.y;
+                    // bulletRectangle.width = bullet.width;
+                    // bulletRectangle.height = bullet.height;    
+                    // if(enemyRectangle.intersects(bulletRectangle)){
                     this.myPlane.bullets.splice(m, 1);
                     Utils.removeFromParent(bullet);
+                    this.factory.saveClassInstance(MyBullet, bullet);
                     m--;
                     this.enemys.splice(k, 1);
                     Utils.removeFromParent(enemy);
+                    this.factory.saveClassInstance(EnemyPlane, enemy);
                     var _sound = RES.getRes("explosion_wav");
                     _sound.play(0, 1);
                     k--;

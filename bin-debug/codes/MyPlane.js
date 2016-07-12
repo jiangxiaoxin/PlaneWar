@@ -13,6 +13,7 @@ var MyPlane = (function (_super) {
         this.bulletWidth = this.bulletTexture.textureWidth;
         this.bulletHeight = this.bulletTexture.textureHeight;
         this.touchEnabled = true;
+        this.factory = SimpleFactory.getInstance();
     }
     var d = __define,c=MyPlane,p=c.prototype;
     p.start = function () {
@@ -26,7 +27,8 @@ var MyPlane = (function (_super) {
         this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.removeStage, this);
     };
     p.onTimer = function (e) {
-        var bullet = new MyBullet();
+        // var bullet = new MyBullet();
+        var bullet = this.factory.getClassInstance(MyBullet);
         this.bullets.push(bullet);
         var parent = this.parent;
         parent.addChild(bullet);

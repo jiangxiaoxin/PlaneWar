@@ -16,6 +16,8 @@ class MyPlane extends Plane {
     private bulletWidth:number;
     private bulletHeight:number;
 
+    private factory:SimpleFactory;
+
    
     public constructor() {
         super('playerFrame1_png');
@@ -25,6 +27,9 @@ class MyPlane extends Plane {
         this.bulletWidth = this.bulletTexture.textureWidth;
         this.bulletHeight = this.bulletTexture.textureHeight;
         this.touchEnabled = true;
+
+        this.factory = SimpleFactory.getInstance();
+        
     }
 
     public start(): void {
@@ -40,7 +45,8 @@ class MyPlane extends Plane {
 
 
     private onTimer(e:egret.TimerEvent):void{
-        var bullet = new MyBullet();
+        // var bullet = new MyBullet();
+        var bullet = this.factory.getClassInstance(MyBullet);
         this.bullets.push(bullet);
         var parent:egret.DisplayObjectContainer = this.parent;
         parent.addChild(bullet);

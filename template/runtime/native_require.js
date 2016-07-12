@@ -22,6 +22,7 @@ var game_file_list = [
 	"bin-debug/codes/GameLoop.js",
 	"bin-debug/codes/MyBullet.js",
 	"bin-debug/codes/MyPlane.js",
+	"bin-debug/codes/SimpleFactory.js",
 	"bin-debug/codes/StartLayer.js",
 	"bin-debug/codes/Utils.js",
 	//----auto game_file_list end----
@@ -58,7 +59,7 @@ egret_native.egretStart = function () {
 		contentHeight: 800,
 		showPaintRect: false,
 		showFPS: true,
-		fpsStyles: "x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.9",
+		fpsStyles: "x:0,y:0,size:20,textColor:0x00c200,bgAlpha:0.9",
 		showLog: false,
 		logFilter: "",
 		maxTouches: 2,

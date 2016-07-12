@@ -50,6 +50,7 @@
 	<script egret="game" src="bin-debug/codes/GameLoop.js"></script>
 	<script egret="game" src="bin-debug/codes/MyBullet.js"></script>
 	<script egret="game" src="bin-debug/codes/MyPlane.js"></script>
+	<script egret="game" src="bin-debug/codes/SimpleFactory.js"></script>
 	<script egret="game" src="bin-debug/codes/StartLayer.js"></script>
 	<script egret="game" src="bin-debug/codes/Utils.js"></script>
 	<!--game_files_end-->
@@ -66,11 +67,12 @@
          data-show-paint-rect="false"
          data-multi-fingered="2"
          data-show-fps="true" data-show-log="false"
-         data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.9">
+         data-show-fps-style="x:0,y:0,size:20,textColor:0x00c200,bgAlpha:0.9">
     </div>
     <script>
         //默认使用 WebGL 渲染模式
-        egret.runEgret({renderMode:"webgl"});
+        // egret.runEgret({renderMode:"webgl"});//webgl canvas
+        egret.runEgret();
     </script>
 </body>
 </html>
