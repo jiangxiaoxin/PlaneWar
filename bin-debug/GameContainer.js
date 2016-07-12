@@ -11,11 +11,15 @@ var GameContainer = (function (_super) {
      */
     p.addToStage = function (e) {
         this.removeEventListener(egret.Event.ADDED_TO_STAGE, this.addToStage, this);
+        //添加滚动舞台
         this.scrollStage = new StageScroll();
         this.addChild(this.scrollStage);
         this.scrollStage.start();
+        //添加背景音乐，背景音乐一直存在，从一开始就播放
         this.bgMusic = RES.getRes("music_mp3");
         this.bgMusic.play();
+        this.gameLoop = new GameLoop(this);
+        //游戏开始的按钮层
         this.startLayer = new StartLayer(this.stage.stageWidth, this.stage.stageHeight);
         this.addChild(this.startLayer);
         this.startLayer.addEventListener(StartLayer.START, this.startBtnTap, this);
@@ -24,32 +28,7 @@ var GameContainer = (function (_super) {
         console.log('start btn tap');
         this.removeChild(this.startLayer);
         //开始 
-        this.addEventListener(egret.Event.ENTER_FRAME, this.onFrame, this);
-        this.initMyPlane();
-        this.initEnemy();
-    };
-    p.onFrame = function (e) {
-        console.log(this.enemys.length);
-    };
-    p.initMyPlane = function () {
-        this.myPlane = new MyPlane(this);
-        this.addChild(this.myPlane);
-        this.myPlane.x = this.stage.stageWidth - this.myPlane.width >> 1;
-        this.myPlane.y = this.stage.stageHeight - this.myPlane.height >> 1;
-        this.myPlane.start();
-    };
-    p.initEnemy = function () {
-        this.enemys = [];
-        this.enemeyTimer = new egret.Timer(1500); //1.5s
-        this.enemeyTimer.addEventListener(egret.TimerEvent.TIMER, this.onTimer, this);
-        this.enemeyTimer.start();
-    };
-    p.onTimer = function (e) {
-        var enemy = new EnemyPlane(this);
-        this.addChild(enemy);
-        enemy.x = Math.random() * (this.stage.stageWidth - enemy.width);
-        enemy.y = -enemy.height;
-        this.enemys.push(enemy);
+        this.gameLoop.start();
     };
     return GameContainer;
 }(egret.DisplayObjectContainer));

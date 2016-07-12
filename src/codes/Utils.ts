@@ -9,4 +9,10 @@ class Utils {
     public static getTexureByName(name: string):egret.Texture{
         return RES.getRes(name);
     }
+
+    public static removeFromParent(display:egret.DisplayObject):void{
+        if (display && display.parent) {
+            display.parent.removeChild(display);
+        }
+    }
 }

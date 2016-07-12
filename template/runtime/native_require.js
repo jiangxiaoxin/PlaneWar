@@ -19,6 +19,7 @@ var game_file_list = [
 	"bin-debug/codes/Button.js",
 	"bin-debug/codes/Plane.js",
 	"bin-debug/codes/EnemyPlane.js",
+	"bin-debug/codes/GameLoop.js",
 	"bin-debug/codes/MyBullet.js",
 	"bin-debug/codes/MyPlane.js",
 	"bin-debug/codes/StartLayer.js",

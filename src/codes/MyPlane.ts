@@ -1,10 +1,12 @@
 class MyPlane extends Plane {
 
 
+    public static MY_PLANE_DEAD = "MY_PLANE_DEAD";
+
     private bulletName: string;
     private bulletTexture: egret.Texture;
-    private bullets: egret.Bitmap[];
-
+    public bullets: MyBullet[];
+    private life:number = 10;
     private timer:egret.Timer;
     /**
      * 飞机的攻击速度。每500ms攻击一次
@@ -14,17 +16,15 @@ class MyPlane extends Plane {
     private bulletWidth:number;
     private bulletHeight:number;
 
-    private mainGame:GameContainer;
-
-
-    public constructor(mainGame:GameContainer) {
+   
+    public constructor() {
         super('playerFrame1_png');
-        this.mainGame = mainGame;
+        
         this.bulletName = 'b1_png';
         this.bulletTexture = RES.getRes(this.bulletName);
         this.bulletWidth = this.bulletTexture.textureWidth;
         this.bulletHeight = this.bulletTexture.textureHeight;
-        // this.touchEnabled = true;
+        this.touchEnabled = true;
     }
 
     public start(): void {
@@ -32,58 +32,64 @@ class MyPlane extends Plane {
         this.timer = new egret.Timer(this.attackSpeed);
         this.timer.addEventListener(egret.TimerEvent.TIMER,this.onTimer,this);
         this.timer.start();
-        this.addEventListener(egret.Event.ENTER_FRAME, this.onFrame, this);
-        this.mainGame.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouchBegin,this);
+        this.touchEnabled = true;
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.touchBegin,this);
+        this.addEventListener(egret.TouchEvent.TOUCH_END,this.touchEnd,this);
+        this.addEventListener(egret.Event.REMOVED_FROM_STAGE,this.removeStage,this);
     }
 
-    private onTouchBegin(e:egret.TouchEvent):void{
-        this.mainGame.removeEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouchBegin,this);
-        this.mainGame.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.touchMove,this);
+
+    private onTimer(e:egret.TimerEvent):void{
+        var bullet = new MyBullet();
+        this.bullets.push(bullet);
+        var parent:egret.DisplayObjectContainer = this.parent;
+        parent.addChild(bullet);
+        //子弹的位置在我的飞机的头部地方发射
+        bullet.x = this.x + (this.planeBitmap.width - bullet.width >> 1);
+        bullet.y = this.y - bullet.height;
+
+        var effect:egret.Sound = RES.getRes("shootmp3_mp3");
+        effect.play(0,1);
     }
 
+    private offsetPoint:egret.Point;
+    //就相当于MOUSE_DOWN事件
+    private touchBegin(e:egret.TouchEvent):void{
+        if (!this.offsetPoint) {
+            this.offsetPoint = new egret.Point();
+        }
+        this.offsetPoint.x = e.stageX - this.x;
+        this.offsetPoint.y = e.stageY - this.y;
+        this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.touchMove,this);
+    }
+     //就相当于MOUSE_UP事件
+    private touchEnd(e:egret.TouchEvent):void{
+        this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE,this.touchMove,this);
+
+    }
 
     private touchMove(e:egret.TouchEvent):void{
          if (e.type == egret.TouchEvent.TOUCH_MOVE) {
-            var tx: number = e.localX;
-            var ty: number = e.localY;
-           
-            this.x = tx-this.width/2;
-            this.y = ty-this.height/2;
-            
+            this.x = e.stageX - this.offsetPoint.x;
+            this.y = e.stageY - this.offsetPoint.y;
         }
     }
 
-    public stop(): void {
-        this.removeEventListener(egret.Event.ENTER_FRAME, this.onFrame, this);
+
+    private removeStage(e:egret.Event):void{
         this.timer.stop();
         this.timer.removeEventListener(egret.TimerEvent.TIMER,this.onTimer,this);
-        this.timer = null;
-        var count = this.bullets.length;
-        if (count > 0) {
-            for (var i = 0; i < count; i++) {
-                var bullet = this.bullets[i];
-                bullet.parent.removeChild(bullet);
-            }
+        this.removeEventListener(egret.TouchEvent.TOUCH_BEGIN,this.touchBegin,this);
+        this.removeEventListener(egret.TouchEvent.TOUCH_END,this.touchEnd,this);
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE,this.removeStage,this);
+        this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE,this.touchMove,this);
+    }
+
+    public underAttack(damage:number=1):void{
+        this.life -= damage;
+        if(this.life<=0){
+            this.dispatchEvent(new egret.Event(MyPlane.MY_PLANE_DEAD));
         }
-        this.bullets = null;
+
     }
-
-    //跟enemy做判断
-    private onFrame(e: egret.Event): void {
-       
-    }
-
-    private onTimer(e:egret.TimerEvent):void{
-       
-
-        var bullet = new MyBullet(this.mainGame);
-        this.mainGame.addChild(bullet);
-        bullet.x = this.x + (this.planeBitmap.width - bullet.width >> 1);
-        bullet.y = this.y - bullet.height;
-    }
-
-
-
-
-
 }

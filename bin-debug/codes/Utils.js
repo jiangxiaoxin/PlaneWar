@@ -11,6 +11,11 @@ var Utils = (function () {
     Utils.getTexureByName = function (name) {
         return RES.getRes(name);
     };
+    Utils.removeFromParent = function (display) {
+        if (display && display.parent) {
+            display.parent.removeChild(display);
+        }
+    };
     return Utils;
 }());
 egret.registerClass(Utils,'Utils');
