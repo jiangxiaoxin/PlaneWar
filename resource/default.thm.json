@@ -12,8 +12,13 @@
     "eui.ToggleSwitch": "resource/eui_skins/ToggleSwitchSkin.exml",
     "eui.VScrollBar": "resource/eui_skins/VScrollBarSkin.exml",
     "eui.VSlider": "resource/eui_skins/VSliderSkin.exml",
-    "eui.ItemRenderer": "resource/eui_skins/ItemRendererSkin.exml"
+    "eui.ItemRenderer": "resource/eui_skins/ItemRendererSkin.exml",
+    "hjkghhjkhjk": "resource/eui_skins/hjkghhjkhjk.exml",
+    "StartButton2": "resource/eui_skins/StartButton2.exml"
   },
   "autoGenerateExmlsList": true,
-  "exmls": []
+  "exmls": [
+    "resource/assets/skins/StartButtionSkin.exml",
+    "resource/eui_skins/StartButton2.exml"
+  ]
 }

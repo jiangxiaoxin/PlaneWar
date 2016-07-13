@@ -104,22 +104,26 @@ var GameLoop = (function () {
                 k--;
                 continue;
             }
-            var count1 = this.myPlane.bullets.length;
-            var count2 = this.enemys.length;
-            var count3 = count1 * count2;
-            console.log("hittest bullets:" + count1);
-            console.log("hittest enemys:" + count2);
-            console.log("at most:" + count3);
+            // var count1 = this.myPlane.bullets.length;
+            // var count2 = this.enemys.length;
+            // var count3 = count1 * count2;
+            // console.log(`hittest bullets:${count1}`);
+            // console.log(`hittest enemys:${count2}`);
+            // console.log(`at most:${count3}`);
+            //这里是两种不同的碰撞方式，一个是典型的矩形碰撞，一个是精确的像素碰撞
+            //得到的结论就是：千万不要使用精确的像素碰撞，在性能上简直就是地狱，才10次就已经撑不住了。
+            //对于这么个小demo，基本是满帧的，但是开启像素碰撞之后，直接卡出翔，帧频掉了一半，只有30多。
+            //矩形可以保持满帧
             for (var m = 0; m < this.myPlane.bullets.length; m++) {
                 var bullet = this.myPlane.bullets[m];
-                var bulletx = bullet.x + (bullet.width >> 1);
-                var bullety = bullet.y + 1;
-                if (enemy.hitTestPoint(bulletx, bullety, true)) {
-                    // bulletRectangle.x = bullet.x;
-                    // bulletRectangle.y = bullet.y;
-                    // bulletRectangle.width = bullet.width;
-                    // bulletRectangle.height = bullet.height;    
-                    // if(enemyRectangle.intersects(bulletRectangle)){
+                // var bulletx = bullet.x + (bullet.width >> 1);
+                // var bullety = bullet.y + 1;
+                // if (enemy.hitTestPoint(bulletx, bullety, true)) {
+                bulletRectangle.x = bullet.x;
+                bulletRectangle.y = bullet.y;
+                bulletRectangle.width = bullet.width;
+                bulletRectangle.height = bullet.height;
+                if (enemyRectangle.intersects(bulletRectangle)) {
                     this.myPlane.bullets.splice(m, 1);
                     Utils.removeFromParent(bullet);
                     this.factory.saveClassInstance(MyBullet, bullet);

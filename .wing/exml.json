@@ -1,0 +1,12 @@
+{
+    "155e2362301": {
+        "path": "../resource/assets/skins/hjkghhjkhjk.ts",
+        "class": "hjkghhjkhjk",
+        "parentPath": "resource/eui_skins/ButtonSkin.exml"
+    },
+    "155e23d298a": {
+        "path": "../resource/assets/skins/StartButton2.ts",
+        "class": "StartButton2",
+        "parentPath": "resource/eui_skins/ButtonSkin.exml"
+    }
+}
